@@ -1,0 +1,61 @@
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
+
+df=sns.load_dataset('iris')
+
+nc='sepal_length'
+#Statistical analysis
+mean=df[nc].mean()
+median=df[nc].median()
+mode=df[nc].mode()
+var=df[nc].var()
+std=df[nc].std()
+dr=df[nc].max()-df[nc].min()
+
+print(f'Mean:{mean}')
+print(f'Median:{median}')
+print(f'Mode:{mode}')
+print(f'Variance:{var}')
+print(f'Standard Deviation:{std}')
+print(f'Range:{dr}')
+
+plt.figure(figsize=(10,6))
+sns.histplot(df[nc],kde=True)
+plt.title(f'Histogram of {nc}')
+plt.xlabel(nc)
+plt.ylabel('Frequency')
+plt.show()
+
+plt.figure(figsize=(10,6))
+sns.boxplot(x=df[nc])
+plt.title(f'Boxplot of {nc}')
+plt.xlabel(nc)
+plt.show()
+
+Q1=df[nc].quantile(0.25)
+Q3=df[nc].quantile(0.75)
+IQR=Q3-Q1
+
+lb=Q1-1.5*IQR
+ub=Q3+1.5*IQR
+
+out=df[(df[nc]<lb) | (df[nc]>ub)]
+print(f'Outliers:\n{out}')
+
+categorical_column='species'
+
+category_counts=df[categorical_column].value_counts()
+
+plt.figure(figsize=(10, 6))
+category_counts.plot(kind='bar', color='skyblue')
+plt.title(f'Frequency of categories in {categorical_column}')
+plt.xlabel(categorical_column)
+plt.ylabel('Frequency')
+plt.show()
+
+plt.figure(figsize=(8, 8))
+category_counts.plot(kind='pie', autopct='%1.1f%%',startangle=90)
+plt.title(f'Pie chart of {categorical_column} categories')
+plt.ylabel('') 
+plt.show()
