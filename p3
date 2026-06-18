@@ -1,0 +1,48 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.preprocessing import StandardScaler
+# Load the dataset
+iris = load_iris()
+x = iris.data # Features
+y = iris.target # Target values
+print(x)
+print(y)
+
+
+scaler = StandardScaler()
+x_scaled = scaler.fit_transform(x)
+print(x_scaled)
+
+cov_matrix = np.cov(x_scaled.T)
+print(cov_matrix)
+
+eigenvalues, eigenvectors = np.linalg.eig(cov_matrix)
+print(eigenvalues)
+print("\n",eigenvectors)
+
+sorted_indices = np.argsort(eigenvalues)[::-1]
+eigenvalues_sorted=eigenvalues[sorted_indices]
+
+eigenvectors_sorted = eigenvectors[:,sorted_indices]
+print(eigenvalues_sorted)
+print("\n",eigenvectors_sorted)
+
+top_2_eigenvectors = eigenvectors_sorted[:,:2]
+print(top_2_eigenvectors)
+
+x_pca = x_scaled.dot(top_2_eigenvectors)
+print(x_pca)
+
+total_variance=sum(eigenvalues_sorted)
+explained_variance_ratio=eigenvalues_sorted[:2]/total_variance
+print(f"Explained variance ratio of the 1st two components:
+{explained_variance_ratio}")
+# Visualization
+plt.figure(figsize=(8,6))
+plt.scatter(x_pca[:,0],x_pca[:,1], c=y, cmap="viridis",edgecolor="k",s=50)
+plt.title("PCA of Iris Dataset (Reduced to 2D)",fontsize = 14)
+plt.xlabel("Principal Component 1")
+plt.ylabel("Principal Component 2")
+plt.colorbar(label="Species")
+plt.show()
